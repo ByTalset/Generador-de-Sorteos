@@ -1,0 +1,6 @@
+@LoginValidator.Api_HostAddress = http://localhost:5107
+
+GET {{LoginValidator.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

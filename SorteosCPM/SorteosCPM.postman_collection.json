@@ -1,0 +1,339 @@
+{
+	"info": {
+		"_postman_id": "fd6f8fb9-fc96-45ec-a1d3-f937e9c4c1bd",
+		"name": "SorteosCPM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27775108"
+	},
+	"item": [
+		{
+			"name": "Login AD",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Alopezc\",\r\n    \"password\": \"Chivas2026-*\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LocalHostLogin}}/Login",
+							"host": [
+								"{{LocalHostLogin}}"
+							],
+							"path": [
+								"Login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RenewToken",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IkFsb3BlemMiLCJyb2xlIjoiQWRtaW5pc3RyYXRvcnMiLCJuYmYiOjE3NTY3ODkxMzgsImV4cCI6MTc1Njc4OTQzOCwiaWF0IjoxNzU2Nzg5MTM4fQ.-LnzOAGYs6XRUYFhaZHu1OR7yJcWFqV1r5pqlQrC8q8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LocalHostLogin}}/RenewToken",
+							"host": [
+								"{{LocalHostLogin}}"
+							],
+							"path": [
+								"RenewToken"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Generador Sorteos",
+			"item": [
+				{
+					"name": "GetRaffles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IkFsb3BlemMiLCJyb2xlIjoiQWRtaW5pc3RyYXRvcnMiLCJuYmYiOjE3NTY3NzExNTYsImV4cCI6MTc1Njc3MTQ1NiwiaWF0IjoxNzU2NzcxMTU2fQ.V-ZzZBzwknJutdhtLWk_jACSedDMQq9WcecT1vfVoKY",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{LocalHostGeneratorRaffle}}/RafflesList",
+							"host": [
+								"{{LocalHostGeneratorRaffle}}"
+							],
+							"path": [
+								"RafflesList"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GenerateRaffle",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "NameRaffle",
+									"value": "Sorteo 75 Aniversario",
+									"type": "text"
+								},
+								{
+									"key": "Image",
+									"type": "file",
+									"src": "/C:/Users/Anton/OneDrive/Imágenes/133839744055888071.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{LocalHostGeneratorRaffle}}/RegisteredRaffle",
+							"host": [
+								"{{LocalHostGeneratorRaffle}}"
+							],
+							"path": [
+								"RegisteredRaffle"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CargaPremios",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "IdSorteo",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "File",
+									"type": "file",
+									"src": "/E:/Proyectos .NET/SorteosCPM/CargaPremios.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{LocalHostGeneratorRaffle}}/AwardsUploads",
+							"host": [
+								"{{LocalHostGeneratorRaffle}}"
+							],
+							"path": [
+								"AwardsUploads"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CargaParticipantes",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "IdSorteo",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "File",
+									"type": "file",
+									"src": "/E:/Proyectos .NET/SorteosCPM/CargaParticipantes_10000.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{LocalHostGeneratorRaffle}}/ParticipantsUploads",
+							"host": [
+								"{{LocalHostGeneratorRaffle}}"
+							],
+							"path": [
+								"ParticipantsUploads"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LocalHostGeneratorRaffle}}/DrawSettings/4/2",
+							"host": [
+								"{{LocalHostGeneratorRaffle}}"
+							],
+							"path": [
+								"DrawSettings",
+								"4",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ejecucion Sorteo",
+			"item": [
+				{
+					"name": "Premio Actual",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LocalHostRaffle}}/GetAaward/1",
+							"host": [
+								"{{LocalHostRaffle}}"
+							],
+							"path": [
+								"GetAaward",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sortear",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LocalHostRaffle}}/Execute/1",
+							"host": [
+								"{{LocalHostRaffle}}"
+							],
+							"path": [
+								"Execute",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reporteria",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LocalHostRaffle}}/ListWinner/1",
+							"host": [
+								"{{LocalHostRaffle}}"
+							],
+							"path": [
+								"ListWinner",
+								"1"
+							],
+							"query": [
+								{
+									"key": "IdZona",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista de Areas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LocalHostRaffle}}/ListAreas/1",
+							"host": [
+								"{{LocalHostRaffle}}"
+							],
+							"path": [
+								"ListAreas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "LocalHostLogin",
+			"value": ""
+		},
+		{
+			"key": "LocalHostGeneratorRaffle",
+			"value": ""
+		},
+		{
+			"key": "LocalHostRaffle",
+			"value": ""
+		}
+	]
+}

@@ -1,0 +1,28 @@
+CREATE TABLE SorteosCPM(
+	IdSorteo INT IDENTITY PRIMARY KEY,
+	Nombre VARCHAR(100) NOT NULL,
+	PermisoSegob NVARCHAR(100),
+	RutaImagen NVARCHAR(MAX),
+	Tabla_Zonas VARCHAR(25) 
+);
+GO
+
+CREATE TABLE Ganadores(
+	IdGanador INT IDENTITY PRIMARY KEY,
+	IdParticipante INT,
+	CIF NVARCHAR(MAX),
+	IdZona INT,
+	IdPremio INT,
+	IdSorteo INT FOREIGN KEY REFERENCES [SorteosCPM] (IdSorteo)
+);
+GO
+
+CREATE TABLE ProcessCarga (
+	ProcessId UNIQUEIDENTIFIER PRIMARY KEY,
+	IdSorteo INT NOT NULL,
+	Estatus NVARCHAR(50) NOT NULL, -- Pending, Running, Completed, Failed
+	CreadoA DATETIME2 DEFAULT SYSUTCDATETIME(),
+	CompletadoA DATETIME2 DEFAULT SYSUTCDATETIME(),
+	FilasProcesadas INT NULL,
+	MensajeError NVARCHAR(MAX) NULL
+);
