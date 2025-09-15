@@ -52,3 +52,20 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Archivos y carpetas de Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Archivos y carpetas de Visual Studio Code
+.vscode/
+
+# Archivos de compilación
+bin/
+obj/
+
+# Otros
+*.log
