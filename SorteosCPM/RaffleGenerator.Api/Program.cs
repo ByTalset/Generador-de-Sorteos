@@ -4,6 +4,7 @@ using DbServicesProvider.Interfaces;
 using DbServicesProvider.Repositories.Sql;
 using DbServicesProvider.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using RaffleGenerator.Api;
@@ -13,7 +14,6 @@ using RaffleServicesProvider.Interfaces;
 using RaffleServicesProvider.Services;
 using Serilog;
 using Serilog.Events;
-using Serilog.Extensions.Hosting;
 using System.Security.Claims;
 using WorkerService;
 using WorkerService.Services;
@@ -52,6 +52,14 @@ builder.Services.AddScoped<IImageFileManagement, ImageServices>();
 builder.Services.AddTransient<RafflesManagement>();
 builder.Services.AddSingleton<LoadQueueService>();
 builder.Services.AddHostedService<Worker>();
+builder.Services.Configure<FormOptions>(opt =>
+{
+    opt.MultipartBodyLengthLimit = long.MaxValue;
+});
+builder.Services.Configure<IISServerOptions>(opt =>
+{
+    opt.MaxRequestBodySize = long.MaxValue;
+});
 
 string[] origins = builder.Configuration.GetValue<string[]>("Origins") ?? Array.Empty<string>();
 string secretKey = builder.Configuration.GetValue<string>("Jwt:Key") ?? throw new ArgumentException("Key not found in configuration (appsettings.json)");
@@ -175,7 +183,7 @@ app.MapPost("/AwardsUploads", async ([FromServices] RafflesManagement management
 .WithOpenApi();
 
 
-app.MapPost("/ParticipantsUploads", async ([FromServices] IFileGenerator fileServices, [FromServices] LoadQueueService queueService, [FromForm] LoadRequest carga) =>
+app.MapPost("/ParticipantsUploads", [DisableRequestSizeLimit] async ([FromServices] IFileGenerator fileServices, [FromServices] LoadQueueService queueService, [FromForm] LoadRequest carga) =>
 {
     if (carga.File != null)
     {

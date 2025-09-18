@@ -47,24 +47,24 @@ public static class QuerysHelper
         return builder.ToString();
     }
 
-    public static string CreateTableAwards(string nombreTabla, string nombreTablaZonas)
+    public static string CreateTableAwards(string nombreTabla)
     {
         StringBuilder builder = new();
         builder.AppendLine($"CREATE TABLE [{nombreTabla}] (         ");
         builder.AppendLine("    IdPremio INT PRIMARY KEY IDENTITY,  ");
         builder.AppendLine("    Descripcion NVARCHAR(100) NOT NULL, ");
         builder.AppendLine("    Cantidad INT NOT NULL,              ");
-        builder.AppendLine($"   IdZona INT NOT NULL FOREIGN KEY REFERENCES [{nombreTablaZonas}] (IdZona)");
+        builder.AppendLine($"   IdZona INT                          ");
         builder.AppendLine(")                                       ");
         return builder.ToString();
     }
 
-    public static string CreateTableParticipant(string nombreTabla, string nombreTablaZonas)
+    public static string CreateTableParticipant(string nombreTablaParticipants)
     {
         StringBuilder builder = new();
-        builder.AppendLine($"IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID('{nombreTabla}') AND type = 'U')     ");
+        builder.AppendLine($"IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID('{nombreTablaParticipants}') AND type = 'U') ");
         builder.AppendLine("BEGIN                                                                                                      ");
-        builder.AppendLine($"   CREATE TABLE [{nombreTabla}] (                                                                         ");
+        builder.AppendLine($"   CREATE TABLE [{nombreTablaParticipants}] (                                                                     ");
         builder.AppendLine("        IdParticipante INT PRIMARY KEY IDENTITY,                                                           ");
         builder.AppendLine("        Folio BIGINT NOT NULL,                                                                             ");
         builder.AppendLine("        CIF NVARCHAR(100) NOT NULL,                                                                        ");
@@ -75,8 +75,8 @@ public static class QuerysHelper
         builder.AppendLine("        Telefono NVARCHAR(20),                                                                             ");
         builder.AppendLine("        Domicilio NVARCHAR(100),                                                                           ");
         builder.AppendLine("        Estado NVARCHAR(50),                                                                               ");
-        builder.AppendLine("        Plaza INT,                                                                                         ");
-        builder.AppendLine($"       IdZona INT NOT NULL FOREIGN KEY REFERENCES [{nombreTablaZonas}] (IdZona)                           ");
+        builder.AppendLine("        Plaza NVARCHAR(50),                                                                                ");
+        builder.AppendLine($"       IdZona INT                                                                                         ");
         builder.AppendLine("    )                                                                                                      ");
         builder.AppendLine("END                                                                                                        ");
         return builder.ToString();

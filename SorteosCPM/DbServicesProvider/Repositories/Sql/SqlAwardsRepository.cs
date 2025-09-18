@@ -8,19 +8,19 @@ public class SqlAwardsRepository : SqlBaseRepository, IAwardsRepository
     public SqlAwardsRepository(SqlConnection readConnection, SqlConnection writeConnection) :
     base(readConnection, writeConnection) { }
 
-    public async Task GenerateAreasAndAwardsAsync(string nombreTabla, string nombreTablaZonas)
+    public async Task GenerateAreasAndAwardsAsync(string nombreTablaZonas, string nombreTablaAwards)
     {
         string queryZonas = QuerysHelper.CreateTableAreas(nombreTablaZonas);
         using SqlCommand commandZonas = new(queryZonas, _writeConnnection, _dbTransaction);
         await commandZonas.ExecuteNonQueryAsync();
-        string queryAwards = QuerysHelper.CreateTableAwards(nombreTabla, nombreTablaZonas);
+        string queryAwards = QuerysHelper.CreateTableAwards(nombreTablaAwards);
         using SqlCommand commandAwards = new(queryAwards, _writeConnnection, _dbTransaction);
         await commandAwards.ExecuteNonQueryAsync();
     }
 
     public async Task<Dictionary<string, int>> InsertAreasAsync(List<Awards> premios, string nombreTabla)
     {
-        IEnumerable<string> zonas = premios.Select(p => p.Zona).Distinct().ToList();
+        IEnumerable<string> zonas = premios.Select(p => p.Zona.Trim('"')).Distinct().ToList();
         Dictionary<string, int> zonasId = new();
         foreach (string zona in zonas)
         {

@@ -5,7 +5,7 @@ namespace DbServicesProvider;
 
 public interface IAwardsRepository
 {
-    Task GenerateAreasAndAwardsAsync(string nombreTabla, string nombreTablaZonas);
+    Task GenerateAreasAndAwardsAsync(string nombreTablaZonas, string nombreTablaAwards);
     Task<Dictionary<string, int>> InsertAreasAsync(List<Awards> premios, string nombreTabla);
     Task InsertAwardsAsync(List<Awards> premios, Dictionary<string, int> zonasId, string nombreTabla);
 }

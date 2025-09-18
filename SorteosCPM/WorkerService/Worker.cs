@@ -41,16 +41,16 @@ public class Worker : BackgroundService
         {
             var zonasResult = await GetAreasAsync(load.IdSorteo);
             if (!zonasResult.IsSuccess)
-                throw new Exception(zonasResult.Error);
+                throw new ArgumentException(zonasResult.Error);
 
             using var reader = new StreamReader(load.Path);
             string? headerLine = await reader.ReadLineAsync();
             if (headerLine == null)
-                throw new Exception("The file is empty or has no headers.");
+                throw new ArgumentException("The file is empty or has no headers.");
 
             var delimiter = RaffleHelperServices.DetectDilimited(headerLine);
             if (!delimiter.IsSuccess)
-                throw new Exception(delimiter.Error);
+                throw new ArgumentException(delimiter.Error);
 
             var metaDatas = GetMetadatas();
             var records = GetRecords(reader, metaDatas, zonasResult.Value, delimiter.Value);
@@ -59,8 +59,8 @@ public class Worker : BackgroundService
         }
         catch (Exception ex)
         {
+            _logger.LogError("Error: {Error}", ex.Message);
             await _unitOfWork.RollbackAsync();
-            _logger.LogError(ex.Message);
         }
     }
 
@@ -69,7 +69,10 @@ public class Worker : BackgroundService
         string? line = string.Empty;
         while ((line = reader.ReadLine()) != null)
         {
-            string[] parts = line.Split(delimiter);
+            string[] parts = line.Split(delimiter, StringSplitOptions.RemoveEmptyEntries)
+                                .Select(p => p.Trim())
+                                .ToArray();
+            if (parts.Length < 11 || parts.Length > 11) continue;
             var record = new SqlDataRecord(metaDatas);
             zonas.TryGetValue(parts[10], out int zonaId);
             record.SetInt64(0, long.Parse(parts[0]));
@@ -81,7 +84,7 @@ public class Worker : BackgroundService
             record.SetString(6, parts[6]);
             record.SetString(7, parts[7]);
             record.SetString(8, parts[8]);
-            record.SetInt32(9, int.Parse(parts[9]));
+            record.SetString(9, parts[9]);
             record.SetInt32(10, zonaId);
 
             yield return record;
@@ -124,7 +127,7 @@ public class Worker : BackgroundService
             new SqlMetaData("Telefono", SqlDbType.NVarChar, 20),
             new SqlMetaData("Domicilio", SqlDbType.NVarChar, 100),
             new SqlMetaData("Estado", SqlDbType.NVarChar, 50),
-            new SqlMetaData("Plaza", SqlDbType.Int),
+            new SqlMetaData("Plaza", SqlDbType.NVarChar, 50),
             new SqlMetaData("IdZona", SqlDbType.Int)
         };
         return metaDatas;

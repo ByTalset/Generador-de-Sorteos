@@ -57,7 +57,7 @@ public class DbServices
         {
             string nombreTablaZonas = $"{idSorteo}_Zonas";
             string nombreTablaPremios = $"{idSorteo}_Premios";
-            await _unitOfWork.AwardsRepository.GenerateAreasAndAwardsAsync(nombreTablaPremios, nombreTablaZonas);
+            await _unitOfWork.AwardsRepository.GenerateAreasAndAwardsAsync(nombreTablaZonas, nombreTablaPremios);
             Dictionary<string, int> zonasId = await _unitOfWork.AwardsRepository.InsertAreasAsync(premios, nombreTablaZonas);
             await _unitOfWork.AwardsRepository.InsertAwardsAsync(premios, zonasId, nombreTablaPremios);
             await _unitOfWork.RaffleRepository.UpdateRaffleAsync(idSorteo, nombreTablaZonas);

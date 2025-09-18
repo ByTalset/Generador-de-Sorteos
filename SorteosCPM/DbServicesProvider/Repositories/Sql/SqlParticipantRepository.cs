@@ -12,7 +12,7 @@ public class SqlParticipantRepository : SqlBaseRepository, IParticipantRepositor
 
     public async Task GenerateParticipantAsync(string nombreTablaParticipantes, string nombreTablaZonas)
     {
-        string query = QuerysHelper.CreateTableParticipant(nombreTablaParticipantes, nombreTablaZonas);
+        string query = QuerysHelper.CreateTableParticipant(nombreTablaParticipantes);
         using var command = new SqlCommand(query, _writeConnnection, _dbTransaction);
         await command.ExecuteNonQueryAsync();
     }

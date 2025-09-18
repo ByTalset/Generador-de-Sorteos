@@ -40,7 +40,9 @@ public class FileServices : IFileGenerator
 
             for (int i = 1; i < lineas.Length; i++)
             {   // 3. Dividir cada línea por el delimitador
-                string[] filas = lineas[i].Split(delimitador.Value);
+                string[] filas = lineas[i].Split(delimitador.Value)
+                                    .Select(l => l.Trim('"'))
+                                    .ToArray();
                 premios.Value.Add(new Awards
                 {
                     Cantidad = int.TryParse(filas[0], out int result) ? result : 0,
