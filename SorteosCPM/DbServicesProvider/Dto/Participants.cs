@@ -12,7 +12,7 @@ public class Participants
     public string Telefono { get; set; } = string.Empty;
     public string Domicilio { get; set; } = string.Empty;
     public string Estado { get; set; } = string.Empty;
-    public int Plaza { get; set; }
+    public string Plaza { get; set; } = string.Empty;
     public string NameZona { get; set; } = string.Empty;
     public string Premio { get; set; } = string.Empty;
 }

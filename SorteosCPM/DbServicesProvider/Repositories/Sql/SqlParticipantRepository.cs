@@ -86,7 +86,7 @@ public class SqlParticipantRepository : SqlBaseRepository, IParticipantRepositor
             winner.Telefono = reader.GetString("Telefono");
             winner.Domicilio = reader.GetString("Domicilio");
             winner.Estado = reader.GetString("Estado");
-            winner.Plaza = reader.GetInt32("Plaza");
+            winner.Plaza = reader.GetString("Plaza");
         }
         return winner;
     }
@@ -115,7 +115,7 @@ public class SqlParticipantRepository : SqlBaseRepository, IParticipantRepositor
                 Telefono = reader.GetString("Telefono"),
                 Domicilio = reader.GetString("Domicilio"),
                 Estado = reader.GetString("Estado"),
-                Plaza = reader.GetInt32("Plaza"),
+                Plaza = reader.GetString("Plaza"),
                 NameZona = reader.GetString("NameZona")
             });
         }
