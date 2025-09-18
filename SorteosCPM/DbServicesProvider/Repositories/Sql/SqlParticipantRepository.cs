@@ -111,7 +111,7 @@ public class SqlParticipantRepository : SqlBaseRepository, IParticipantRepositor
                 Premio = reader.GetString("Premio"),
                 Folio = reader.GetInt64("Folio"),
                 CIF = reader.GetString("CIF"),
-                Nombre = $"{reader.GetString("Nombre")}{reader.GetString("SegundoNombre")}{reader.GetString("PrimerApellido")}{reader.GetString("SegundoApellido")}",
+                Nombre = $"{reader.GetString("Nombre")} {reader.GetString("SegundoNombre")} {reader.GetString("PrimerApellido")} {reader.GetString("SegundoApellido")}",
                 Telefono = reader.GetString("Telefono"),
                 Domicilio = reader.GetString("Domicilio"),
                 Estado = reader.GetString("Estado"),

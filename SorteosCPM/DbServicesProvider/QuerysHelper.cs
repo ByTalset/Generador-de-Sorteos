@@ -107,7 +107,7 @@ public static class QuerysHelper
         return builder.ToString();
     }
 
-    public static string GetAreasAndArwards(string nombreTablaZonas, string nombreTablaPremios)
+    public static string GetAreasAndArwards(int idSorteo, string nombreTablaZonas, string nombreTablaPremios)
     {
         string query = $@";WITH PremiosDisponibles AS (
                                 SELECT TOP 1
@@ -117,15 +117,15 @@ public static class QuerysHelper
                                     p.Descripcion
                                     --p.Cantidad - COUNT(g.IdGanador) AS CantidadRestante,
                                     --p.Cantidad AS Total
-                                FROM [1_Premios] p
-                                INNER JOIN [1_Zonas] z ON p.IdZona = z.IdZona
-                                LEFT JOIN Ganadores g ON p.IdPremio = g.IdPremio AND g.IdSorteo = 1
+                                FROM [{nombreTablaPremios}] p
+                                INNER JOIN [{nombreTablaZonas}] z ON p.IdZona = z.IdZona
+                                LEFT JOIN Ganadores g ON p.IdPremio = g.IdPremio AND g.IdSorteo = {idSorteo}
                                 GROUP BY z.IdZona, z.Nombre, p.IdPremio, p.Descripcion, p.Cantidad
                                 HAVING p.Cantidad - COUNT(g.IdGanador) > 0
                                 ORDER BY z.IdZona, p.IdPremio
                             )
                             SELECT TOP 1
-                                (SELECT COUNT(*) FROM Ganadores WHERE IdSorteo = 1) + 1 AS NumeroPremio,
+                                (SELECT COUNT(*) FROM Ganadores WHERE IdSorteo = {idSorteo}) + 1 AS NumeroPremio,
                                 d.IdZona,
                                 d.Nombre,
                                 d.IdPremio,

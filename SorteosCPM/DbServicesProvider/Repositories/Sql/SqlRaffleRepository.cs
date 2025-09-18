@@ -17,7 +17,7 @@ public class SqlRaffleRepository : SqlBaseRepository, IRaffleRepository
         using SqlDataReader reader = await command.ExecuteReaderAsync();
         if (await reader.ReadAsync())
         {
-            return reader.GetString("Tabla_Zonas");
+            return await reader.IsDBNullAsync("Tabla_Zonas") ? string.Empty : reader.GetString("Tabla_Zonas");
         }
         return string.Empty;
     }
@@ -60,7 +60,7 @@ public class SqlRaffleRepository : SqlBaseRepository, IRaffleRepository
         Awards premios = new();
         string nombreTablaZonas = $"{idSorteo}_Zonas";
         string nombreTablaPremios = $"{idSorteo}_Premios";
-        string query = QuerysHelper.GetAreasAndArwards(nombreTablaZonas, nombreTablaPremios);
+        string query = QuerysHelper.GetAreasAndArwards(idSorteo, nombreTablaZonas, nombreTablaPremios);
         using SqlCommand command = new(query, _readConnection);
         using SqlDataReader reader = await command.ExecuteReaderAsync();
         while (await reader.ReadAsync())
