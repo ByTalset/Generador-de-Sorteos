@@ -34,7 +34,8 @@ public class SqlRaffleRepository : SqlBaseRepository, IRaffleRepository
             {
                 IdSorteo = reader.GetInt32("IdSorteo"),
                 NombreSorteo = reader.GetString("Nombre"),
-                RutaImagen = reader.GetString("RutaImagen")
+                PermisoSegob = await reader.IsDBNullAsync("PermisoSegob") ? string.Empty : reader.GetString("PermisoSegob"),
+                RutaImagen = await reader.IsDBNullAsync("RutaImagen") ? string.Empty : reader.GetString("RutaImagen")
             });
         }
         return raffles;

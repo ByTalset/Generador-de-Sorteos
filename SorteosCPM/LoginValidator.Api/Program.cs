@@ -59,7 +59,8 @@ builder.Services.AddCors(policys =>
 {
     policys.AddPolicy("PolicyCPM", p =>
     {
-        p.WithOrigins(origins)
+        // p.WithOrigins(origins)
+        p.AllowAnyOrigin()
         .AllowAnyHeader()
         .AllowAnyMethod();
     });
@@ -82,7 +83,7 @@ app.UseSerilogRequestLogging(options =>
         httpContext.Response.StatusCode > 499 ? LogEventLevel.Error : LogEventLevel.Information;
 });
 
-// app.UseCors("PolicyCPM");
+app.UseCors("PolicyCPM");
 app.UseAuthorization();
 app.UseHttpsRedirection();
 

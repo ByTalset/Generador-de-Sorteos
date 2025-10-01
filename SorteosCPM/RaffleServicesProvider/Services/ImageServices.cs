@@ -48,6 +48,7 @@ public class ImageServices : IImageFileManagement
                 {
                     IdSorteo = raffle.IdSorteo,
                     NombreSorteo = raffle.NombreSorteo,
+                    PermisoSegob = raffle.PermisoSegob,
                     ImagenSorteo = base64Image
                 });
             }

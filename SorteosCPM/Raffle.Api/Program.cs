@@ -76,7 +76,8 @@ builder.Services.AddCors(policys =>
 {
     policys.AddPolicy("PolicyCPM", p =>
     {
-        p.WithOrigins(origins)
+        // p.WithOrigins(origins)
+        p.AllowAnyOrigin()
         .AllowAnyHeader()
         .AllowAnyMethod();
     });
@@ -99,7 +100,7 @@ app.UseSerilogRequestLogging(options =>
         httpContext.Response.StatusCode > 499 ? LogEventLevel.Error : LogEventLevel.Information;
 });
 
-// app.UseCors("PolicyCPM");
+app.UseCors("PolicyCPM");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
@@ -133,7 +134,7 @@ app.MapGet("/Execute/{IdSorteo}", async (int idSorteo, [FromServices] RafflesMan
     return Results.Ok(new
         {
             results.Value.CIF,
-            Nombre = $"{results.Value.Nombre}{results.Value.SegundoNombre}{results.Value.PrimerApellido}{results.Value.PrimerApellido}",
+            Nombre = $"{results.Value.Nombre}{results.Value.SegundoNombre}{results.Value.PrimerApellido}",
             results.Value.Telefono,
             results.Value.Domicilio,
             results.Value.Estado,
