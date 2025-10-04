@@ -18,4 +18,4 @@ builder.Services.AddSingleton<IUnitOfWork, SqlUnitOfWork>(provider =>
 });
 
 var host = builder.Build();
-host.Run();
+await host.RunAsync();

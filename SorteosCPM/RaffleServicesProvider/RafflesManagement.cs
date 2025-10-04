@@ -102,7 +102,7 @@ public class RafflesManagement
 
     public async Task<Result<bool>> RaffleSettingAsync(int idSorteo, int options)
     {
-        Result<bool> result = new(false, false, string.Empty, 0);
+        Result<bool> result;
         if (options != 1)
         {
             result = await _dbServices.DeleteAsync(idSorteo);

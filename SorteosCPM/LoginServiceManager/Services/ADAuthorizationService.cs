@@ -9,16 +9,14 @@ namespace ServiceManager.Services;
 public class ADAuthorizationService : IAuthorization
 {
     private readonly ILogger<ADAuthorizationService> _logger;
-    private readonly IConfiguration _configuration;
     private readonly string _domain;
     private readonly List<string> _roles;
     public ADAuthorizationService(IConfiguration configuration, ILogger<ADAuthorizationService> logger)
     {
         // Constructor logic
         _logger = logger;
-        _configuration = configuration;
-        _domain = _configuration.GetSection("AD:Domain").Value ?? "";
-        _roles = _configuration.GetSection("Roles").Get<List<string>>() ?? new List<string>();
+        _domain = configuration.GetSection("AD:Domain").Value ?? "";
+        _roles = configuration.GetSection("Roles").Get<List<string>>() ?? new List<string>();
     }
     // Implementation of authorization service would go here 
     public Result<string> GetRole(string username)
@@ -34,7 +32,7 @@ public class ADAuthorizationService : IAuthorization
                                 .Select(g => g.SamAccountName)
                                 .ToList();
         string role = groups.FirstOrDefault(g => _roles.Exists(r => r.Equals(g, StringComparison.OrdinalIgnoreCase))) ?? "NoRole";
-        _logger.LogInformation("The following role {role} is obtained.", role);
+        _logger.LogInformation("The following role {Role} is obtained.", role);
         return Result<string>.Success(role);
     }
 }

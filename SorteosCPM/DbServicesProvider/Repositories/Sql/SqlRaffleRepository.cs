@@ -55,6 +55,14 @@ public class SqlRaffleRepository : SqlBaseRepository, IRaffleRepository
         using var command = new SqlCommand(query, _writeConnnection, _dbTransaction);
         await command.ExecuteNonQueryAsync();
     }
+
+    public async Task<bool> UpdateRaffleAsync(int idSorteo, string? nombreSorteo, string? permiso, string? routeImage)
+    {
+        string query = QuerysHelper.UpdateRaffle(idSorteo, nombreSorteo, routeImage, permiso);
+        using var command = new SqlCommand(query, _writeConnnection, _dbTransaction);
+        int rowAffected = await command.ExecuteNonQueryAsync();
+        return rowAffected > 0;
+    }
     
     public async Task<Awards> GetAreasAndAwardsAsync(int idSorteo)
     {
@@ -119,14 +127,5 @@ public class SqlRaffleRepository : SqlBaseRepository, IRaffleRepository
         using SqlDataReader reader = await command.ExecuteReaderAsync();
         string routeImage = await reader.ReadAsync() ? reader.GetString("RutaImagen") : string.Empty;
         return routeImage;
-    }
-
-    public async Task<bool> UpdateRaffleAsync(int idSorteo, string? nombreSorteo, string? permiso, string? routeImage)
-    {
-        string query = QuerysHelper.UpdateRaffle(idSorteo, nombreSorteo, routeImage, permiso);
-        using var command = new SqlCommand(query, _writeConnnection, _dbTransaction);
-        await command.ExecuteNonQueryAsync();
-        int rowAffected = await command.ExecuteNonQueryAsync();
-        return rowAffected > 0;
     }
 }

@@ -9,8 +9,8 @@ public class LoginManagement
 {
     private readonly IAuthentication _authenticationService;
     private readonly IAuthorization _authorizationService;
-    private readonly JWTAuthorizationService _jwtAuthentication;
-    public LoginManagement(IAuthentication authenticationService, IAuthorization authorizationService, JWTAuthorizationService jwtAuthentication)
+    private readonly JwtAuthorizationService _jwtAuthentication;
+    public LoginManagement(IAuthentication authenticationService, IAuthorization authorizationService, JwtAuthorizationService jwtAuthentication)
     {
         _authenticationService = authenticationService;
         _authorizationService = authorizationService;

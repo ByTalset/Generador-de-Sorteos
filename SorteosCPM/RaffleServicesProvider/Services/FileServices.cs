@@ -51,12 +51,12 @@ public class FileServices : IFileGenerator
                 });
             }
             premios.IsSuccess = true;
-            _logger.LogInformation("It is obtained {@premios} from the response.", premios.Value);
+            _logger.LogInformation("It is obtained {Premios} from the response.", premios.Value);
             return Task.FromResult(premios);
         }
         catch (Exception ex)
         {
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, "The following unexpected error occurred:{Message}", ex.Message);
             return Task.FromResult(Result<List<Awards>>.Failure(ex.Message));
         }
     }
@@ -67,12 +67,12 @@ public class FileServices : IFileGenerator
         {
             var route = Path.Combine(_pathTemp, $"{file.FileName}{file.Extension}");
             await File.WriteAllBytesAsync(route, file.Contenido);
-            _logger.LogInformation("It is obtained {route} from the response.", route);
+            _logger.LogInformation("It is obtained {Route} from the response.", route);
             return Result<string>.Success(route);
         }
         catch (Exception ex)
         {
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, "The following unexpected error occurred:{Message}", ex.Message);
             return Result<string>.Failure(ex.Message);
         }
     }

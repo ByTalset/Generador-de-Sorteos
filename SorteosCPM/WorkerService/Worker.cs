@@ -26,7 +26,7 @@ public class Worker : BackgroundService
     {
         await foreach (var carga in _queueService.DequeueAsync(stoppingToken))
         {
-            _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+            _logger.LogInformation("Worker running at: {Time}", DateTimeOffset.Now);
             await ProcessFileAsync(carga);
             var result = DeleteDirectory(carga.Path);
             if (!result.IsSuccess) _logger.LogError(result.Error);
@@ -59,12 +59,12 @@ public class Worker : BackgroundService
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error: {Error}", ex.Message);
+            _logger.LogError(ex, "Error: {Error}", ex.Message);
             await _unitOfWork.RollbackAsync();
         }
     }
 
-    private IEnumerable<SqlDataRecord> GetRecords(StreamReader reader, SqlMetaData[] metaDatas, Dictionary<string, int> zonas, char delimiter)
+    private static IEnumerable<SqlDataRecord> GetRecords(StreamReader reader, SqlMetaData[] metaDatas, Dictionary<string, int> zonas, char delimiter)
     {
         string? line = string.Empty;
         while ((line = reader.ReadLine()) != null)
@@ -102,7 +102,7 @@ public class Worker : BackgroundService
         return Result<Dictionary<string, int>>.Success(areas);
     }
 
-    private Result<string> DeleteDirectory(string file)
+    private static Result<string> DeleteDirectory(string file)
     {
         try
         {
@@ -115,7 +115,7 @@ public class Worker : BackgroundService
         }
     }
 
-    private SqlMetaData[] GetMetadatas()
+    private static SqlMetaData[] GetMetadatas()
     {
         SqlMetaData[] metaDatas = new[]{
             new SqlMetaData("Folio", SqlDbType.BigInt),

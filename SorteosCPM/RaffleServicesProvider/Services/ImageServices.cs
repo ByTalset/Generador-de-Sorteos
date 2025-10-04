@@ -24,12 +24,12 @@ public class ImageServices : IImageFileManagement
         {
             var route = Path.Combine(_path, $"{image.FileName}{image.Extension}");
             await File.WriteAllBytesAsync(route, image.Contenido);
-            _logger.LogInformation("It is obtained {route} from the response.", route);
+            _logger.LogInformation("It is obtained {Route} from the response.", route);
             return Result<string>.Success(route);
         }
         catch (Exception ex)
         {
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, "The following unexpected error occurred:{Message}", ex.Message);
             return Result<string>.Failure(ex.Message);
         }
     }
@@ -54,11 +54,11 @@ public class ImageServices : IImageFileManagement
             }
             catch (Exception ex)
             {
-                _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+                _logger.LogError(ex, "The following unexpected error occurred:{Message}", ex.Message);
                 return Result<List<DescriptionRaffleDto>>.Failure(ex.Message);
             }
         }
-        _logger.LogInformation("It is obtained {@descriptionRaffles} from the response.", descriptionRaffles.Select(d => new{IdSorteo = d.IdSorteo, Nombre = d.NombreSorteo}));
+        _logger.LogInformation("It is obtained {DescriptionRaffles} from the response.", descriptionRaffles.Select(d => new{IdSorteo = d.IdSorteo, Nombre = d.NombreSorteo}));
         return Result<List<DescriptionRaffleDto>>.Success(descriptionRaffles);
     }
 
@@ -72,12 +72,12 @@ public class ImageServices : IImageFileManagement
             }
             var route = Path.Combine(_path, $"{image.FileName}{image.Extension}");
             await File.WriteAllBytesAsync(route, image.Contenido);
-            _logger.LogInformation("It is obtained {route} from the response.", route);
+            _logger.LogInformation("It is obtained {Route} from the response.", route);
             return Result<string>.Success(route);
         }
         catch (Exception ex)
         {
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, "The following unexpected error occurred:{Message}", ex.Message);
             return Result<string>.Failure(ex.Message);
         }
     }

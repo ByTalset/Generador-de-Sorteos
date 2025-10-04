@@ -95,11 +95,17 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging(options =>
 {
     options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.000} ms";
-    options.GetLevel = (httpContext, elapsed, ex) =>
-        ex != null ? LogEventLevel.Error :
-        httpContext.Response.StatusCode > 499 ? LogEventLevel.Error : LogEventLevel.Information;
+    options.GetLevel = GetLogLevel;
 });
 
+static LogEventLevel GetLogLevel(HttpContext httpContext, double elapsed, Exception? ex)
+{
+    if (ex != null || httpContext.Response.StatusCode >= 500)
+        return LogEventLevel.Error;
+    return LogEventLevel.Information;
+}
+
+app.UseStaticFiles();
 app.UseCors("PolicyCPM");
 app.UseAuthentication();
 app.UseAuthorization();
@@ -167,4 +173,6 @@ app.MapGet("/ListAreas/{IdSorteo}", async (int idSorteo, [FromServices] RafflesM
 .DisableAntiforgery()
 .WithOpenApi();
 
-app.Run();
+app.MapFallbackToFile("index.html");
+
+await app.RunAsync();

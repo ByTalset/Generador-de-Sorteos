@@ -8,6 +8,7 @@ namespace DbServicesProvider.Services;
 
 public class DbServices
 {
+    private const string UNEXPECTED_ERROR_MESSAGE = "The following unexpected error occurred:{0}";
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<DbServices> _logger;
     public DbServices(IUnitOfWork unitOfWork, ILogger<DbServices> logger)
@@ -22,12 +23,12 @@ public class DbServices
         try
         {
             var raffles = await _unitOfWork.RaffleRepository.GetAllAsync();
-            _logger.LogInformation("It is obtained {@raffles} from the response.", raffles);
+            _logger.LogInformation("It is obtained {Raffles} from the response.", raffles);
             return Result<List<Raffle>>.Success(raffles);
         }
         catch (Exception ex)
         {
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
             return Result<List<Raffle>>.Failure(ex.Message);
         }
     }
@@ -39,13 +40,13 @@ public class DbServices
         {
             var success = await _unitOfWork.RaffleRepository.InsertAsync(nombreSorteo, route);
             await _unitOfWork.CommitAsync();
-            _logger.LogInformation("It is obtained {success} from the response.", success);
+            _logger.LogInformation("It is obtained {Success} from the response.", success);
             return Result<bool>.Success(success);
         }
         catch (Exception ex)
         {
             await _unitOfWork.RollbackAsync();
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
             return Result<bool>.Failure(ex.Message);
         }
     }
@@ -62,13 +63,13 @@ public class DbServices
             await _unitOfWork.AwardsRepository.InsertAwardsAsync(premios, zonasId, nombreTablaPremios);
             await _unitOfWork.RaffleRepository.UpdateRaffleAsync(idSorteo, nombreTablaZonas);
             await _unitOfWork.CommitAsync();
-            _logger.LogInformation("It is obtained {nombreTablaZonas}\n{nombreTablaPremios}\n And the following prizes and zones are inserted {@zonasId}.", nombreTablaZonas, nombreTablaPremios, zonasId);
+            _logger.LogInformation("It is obtained {NombreTablaZonas}\n{NombreTablaPremios}\n And the following prizes and zones are inserted {ZonasId}.", nombreTablaZonas, nombreTablaPremios, zonasId);
             return Result<bool>.Success(true);
         }
         catch (Exception ex)
         {
             await _unitOfWork.RollbackAsync();
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
             return Result<bool>.Failure(ex.Message);
         }
     }
@@ -79,12 +80,12 @@ public class DbServices
         try
         {
             var awards = await _unitOfWork.RaffleRepository.GetAreasAndAwardsAsync(idSorteo);
-            _logger.LogInformation("It is obtained {@awards} from the response.", awards);
+            _logger.LogInformation("It is obtained {Awards} from the response.", awards);
             return Result<Awards>.Success(awards);
         }
         catch (Exception ex)
         {
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
             return Result<Awards>.Failure(ex.Message);
         }
     }
@@ -100,12 +101,12 @@ public class DbServices
             int folio = idsZona[randomIndex];
             Console.WriteLine($"Folio: {folio}\nIdZona: {idZona}");
             var participant = await _unitOfWork.ParticipantRepository.GetParticipantsWithoutWinningAsync(idSorteo, idZona, folio);
-            _logger.LogInformation("It is obtained {@participant} from the response.", participant);
+            _logger.LogInformation("It is obtained {Participant} from the response.", participant);
             return Result<Participants>.Success(participant!);
         }
         catch (Exception ex)
         {
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
             return Result<Participants>.Failure(ex.Message);
         }
     }
@@ -117,13 +118,13 @@ public class DbServices
         {
             var rowAffected = await _unitOfWork.ParticipantRepository.InsertWinnerAsync(IdParticipante, cif, idZona, idPremio, idSorteo);
             await _unitOfWork.CommitAsync();
-            _logger.LogInformation("It is obtained {rowAffected} from the response.", rowAffected);
+            _logger.LogInformation("It is obtained {RowAffected} from the response.", rowAffected);
             return Result<bool>.Success(rowAffected);
         }
         catch (Exception ex)
         {
             await _unitOfWork.RollbackAsync();
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
             return Result<bool>.Failure(ex.Message);
         }
     }
@@ -134,13 +135,13 @@ public class DbServices
         try
         {
             var winners = await _unitOfWork.ParticipantRepository.GetWinnersAsync(idSorteo, idZona);
-            _logger.LogInformation("It is obtained {@winners} from the response.", winners);
+            _logger.LogInformation("It is obtained {Winners} from the response.", winners);
             return Result<List<Participants>>.Success(winners);
         }
         catch (Exception ex)
         {
             await _unitOfWork.RollbackAsync();
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
             return Result<List<Participants>>.Failure(ex.Message);
         }
     }
@@ -151,12 +152,12 @@ public class DbServices
         try
         {
             var zonas = await _unitOfWork.RaffleRepository.GetAreasAllAsync(idSorteo);
-            _logger.LogInformation("It is obtained {@zonas} from the response.", zonas);
+            _logger.LogInformation("It is obtained {Zonas} from the response.", zonas);
             return Result<List<Zona>>.Success(zonas);
         }
         catch (Exception ex)
         {
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
             return Result<List<Zona>>.Failure(ex.Message);
         }
     }
@@ -168,13 +169,13 @@ public class DbServices
         {
             var delete = await _unitOfWork.RaffleRepository.DeleteRaffleAsync(idSorteo);
             await _unitOfWork.CommitAsync();
-            _logger.LogInformation("It is obtained {delete} from the response.", delete);
+            _logger.LogInformation("It is obtained {Delete} from the response.", delete);
             return Result<bool>.Success(delete);
         }
         catch (Exception ex)
         {
             await _unitOfWork.RollbackAsync();
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
             return Result<bool>.Failure(ex.Message);
         }
     }
@@ -186,13 +187,13 @@ public class DbServices
         {
             var reset = await _unitOfWork.RaffleRepository.ResetRaffleAsync(idSorteo);
             await _unitOfWork.CommitAsync();
-            _logger.LogInformation("It is obtained {reset} from the response.", reset);
+            _logger.LogInformation("It is obtained {Reset} from the response.", reset);
             return Result<bool>.Success(reset);
         }
         catch (Exception ex)
         {
             await _unitOfWork.RollbackAsync();
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
             return Result<bool>.Failure(ex.Message);
         }
     }
@@ -203,12 +204,12 @@ public class DbServices
         try
         {
             string routeOld = await _unitOfWork.RaffleRepository.GetRouteImageAsync(idSorteo);
-            _logger.LogInformation("It is obtained {routeOld} from the response.", routeOld);
+            _logger.LogInformation("It is obtained {RouteOld} from the response.", routeOld);
             return Result<string>.Success(routeOld);
         }
         catch (Exception ex)
         {
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
             return Result<string>.Failure(ex.Message);
         }
     }
@@ -220,13 +221,13 @@ public class DbServices
         {
             var reset = await _unitOfWork.RaffleRepository.UpdateRaffleAsync(idSorteo, nombreSorteo, permiso, routeImage);
             await _unitOfWork.CommitAsync();
-            _logger.LogInformation("It is obtained {reset} from the response.", reset);
+            _logger.LogInformation("It is obtained {Reset} from the response.", reset);
             return Result<bool>.Success(reset);
         }
         catch (Exception ex)
         {
             await _unitOfWork.RollbackAsync();
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
             return Result<bool>.Failure(ex.Message);
         }
     }
@@ -237,12 +238,12 @@ public class DbServices
         try
         {
             var process = await _unitOfWork.ParticipantRepository.GetProcessAsync(idSorteo, processId);
-            _logger.LogInformation("It is obtained {@process} from the response.", process);
+            _logger.LogInformation("It is obtained {Process} from the response.", process);
             return Result<LoadFile>.Success(process);
         }
         catch (Exception ex)
         {
-            _logger.LogError("The following unexpected error occurred:{ex.Message}\n{ex.StackTrace}", ex.Message, ex.StackTrace);
+            _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
             return Result<LoadFile>.Failure(ex.Message);
         }
     }

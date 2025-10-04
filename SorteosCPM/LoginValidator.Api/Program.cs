@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
-using Serilog.Extensions.Hosting;
 using ServiceManager;
 using ServiceManager.Interfaces;
 using ServiceManager.Services;
@@ -31,7 +30,7 @@ builder.Host.UseSerilog();
 
 builder.Services.AddTransient<IAuthentication, ADAuthenticationServices>();
 builder.Services.AddTransient<IAuthorization, ADAuthorizationService>();
-builder.Services.AddTransient<JWTAuthorizationService>();
+builder.Services.AddTransient<JwtAuthorizationService>();
 builder.Services.AddTransient<LoginManagement>();
 
 string[] origins = builder.Configuration.GetValue<string[]>("Origins") ?? Array.Empty<string>();
@@ -78,11 +77,17 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging(options =>
 {
     options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.000} ms";
-    options.GetLevel = (httpContext, elapsed, ex) =>
-        ex != null ? LogEventLevel.Error :
-        httpContext.Response.StatusCode > 499 ? LogEventLevel.Error : LogEventLevel.Information;
+    options.GetLevel = GetLogLevel;
 });
 
+static LogEventLevel GetLogLevel(HttpContext httpContext, double elapsed, Exception? ex)
+{
+    if (ex != null || httpContext.Response.StatusCode >= 500)
+        return LogEventLevel.Error;
+    return LogEventLevel.Information;
+}
+
+app.UseStaticFiles();
 app.UseCors("PolicyCPM");
 app.UseAuthorization();
 app.UseHttpsRedirection();
@@ -99,9 +104,9 @@ app.MapPost("/v1/Login", ([FromServices] LoginManagement login, LoginRequest req
 .WithName("ValidateCredentials")
 .WithOpenApi();
 
-app.MapGet("/v1/RenewToken", ([FromServices] LoginManagement login, HttpRequest request) => 
+app.MapGet("/v1/RenewToken", ([FromServices] LoginManagement login, HttpRequest request) =>
 {
-    string accessToken =  request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+    string accessToken = request.Headers["Authorization"].ToString().Replace("Bearer ", "");
     Result<string> result = login.RenewToken(accessToken);
     if (result.CodeError == 401)
         return Results.Unauthorized();
@@ -113,4 +118,6 @@ app.MapGet("/v1/RenewToken", ([FromServices] LoginManagement login, HttpRequest 
 .RequireAuthorization()
 .WithOpenApi();
 
-app.Run();
+app.MapFallbackToFile("index.html");
+
+await app.RunAsync();

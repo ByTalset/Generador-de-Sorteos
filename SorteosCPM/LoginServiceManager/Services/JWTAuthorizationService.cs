@@ -6,20 +6,18 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ServiceManager.Services;
 
-public class JWTAuthorizationService
+public class JwtAuthorizationService
 {
-    private readonly ILogger<JWTAuthorizationService> _logger;
-    private readonly IConfiguration _configuration;
+    private readonly ILogger<JwtAuthorizationService> _logger;
     private readonly string _secretKey;
     private readonly int _tokenExpiryTime;
     private readonly string _timeType;
-    public JWTAuthorizationService(IConfiguration configuration, ILogger<JWTAuthorizationService> logger)
+    public JwtAuthorizationService(IConfiguration configuration, ILogger<JwtAuthorizationService> logger)
     {
         _logger = logger;
-        _configuration = configuration;
-        _secretKey = _configuration.GetSection("Jwt:Key").Value ?? "";
-        _tokenExpiryTime = int.TryParse(_configuration.GetSection("Jwt:ExpiryTime").Value, out int expiryTime) ? expiryTime : 5; // Default to 5 minutes if not set
-        _timeType = _configuration.GetSection("Jwt:TimeType").Value ?? "Minutes"; // Default to Minutes if not set
+        _secretKey = configuration.GetSection("Jwt:Key").Value ?? "";
+        _tokenExpiryTime = int.TryParse(configuration.GetSection("Jwt:ExpiryTime").Value, out int expiryTime) ? expiryTime : 5; // Default to 5 minutes if not set
+        _timeType = configuration.GetSection("Jwt:TimeType").Value ?? "Minutes"; // Default to Minutes if not set
     }
 
     // Additional methods for generating and validating JWT tokens can be added here

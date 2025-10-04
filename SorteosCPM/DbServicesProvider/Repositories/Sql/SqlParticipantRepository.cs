@@ -130,7 +130,7 @@ public class SqlParticipantRepository : SqlBaseRepository, IParticipantRepositor
         using SqlDataReader reader = await command.ExecuteReaderAsync();
         while (await reader.ReadAsync())
         {
-            load.ProcessId = await reader.IsDBNullAsync("ProcessId") ? default : reader.GetGuid("ProcessId");
+            load.ProcessId = await reader.IsDBNullAsync("ProcessId") ? Guid.Empty : reader.GetGuid("ProcessId");
             load.Status = Enum.Parse<LoadStatus>(reader.GetString("Estatus"));
             load.IdSorteo = reader.GetInt32("IdSorteo");
             load.CreatedAt = await reader.IsDBNullAsync("CreadoA") ? default : reader.GetDateTime("CreadoA");
