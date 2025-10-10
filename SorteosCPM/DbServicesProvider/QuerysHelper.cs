@@ -75,6 +75,7 @@ public static class QuerysHelper
         builder.AppendLine("        Telefono NVARCHAR(20),                                                                             ");
         builder.AppendLine("        Domicilio NVARCHAR(100),                                                                           ");
         builder.AppendLine("        Estado NVARCHAR(50),                                                                               ");
+        builder.AppendLine("        Sucursal NVARCHAR(50),                                                                             ");
         builder.AppendLine("        Plaza NVARCHAR(50),                                                                                ");
         builder.AppendLine($"       IdZona INT                                                                                         ");
         builder.AppendLine("    )                                                                                                      ");
@@ -107,6 +108,19 @@ public static class QuerysHelper
         return builder.ToString();
     }
 
+    public static string UpdateRaffle(int idSorteo, string? nombreSorteo, string? routeImage, string? permiso)
+    {
+        var setters = new List<string>();
+        if (!string.IsNullOrEmpty(nombreSorteo)) setters.Add($"[Nombre] = '{nombreSorteo}' ");
+        if (!string.IsNullOrEmpty(permiso)) setters.Add($"[PermisoSegob] = '{permiso}' ");
+        if (!string.IsNullOrEmpty(routeImage)) setters.Add($"[RutaImagen] = '{routeImage}' ");
+        if (setters.Count == 0) throw new ArgumentException("No hay campos para actualizar");
+        string query = $@"UPDATE SorteosCPM
+                          SET {string.Join(",", setters)}
+                          WHERE IdSorteo = {idSorteo} ";
+        return query;
+    }
+
     public static string GetAreasAndArwards(int idSorteo, string nombreTablaZonas, string nombreTablaPremios)
     {
         string query = $@";WITH PremiosDisponibles AS (
@@ -134,6 +148,15 @@ public static class QuerysHelper
                             ORDER BY d.IdZona, d.IdPremio;";
         return query;
     }
+
+    public static string GetAwards(string nombreTablaPremios, string nombreTablaZonas)
+    {
+        string query = $@"SELECT P.IdPremio, P.Descripcion, P.Cantidad, Z.Nombre AS Zona
+                          FROM [{nombreTablaPremios}] AS P
+                          JOIN [{nombreTablaZonas}] AS Z ON Z.IdZona = P.IdZona";
+
+        return query;
+    }       
 
     public static string GetPartcipantsForZona(string nombreTablaParticipantes, int idZona)
     {
@@ -166,7 +189,7 @@ public static class QuerysHelper
     public static string GetWinners(int idSorteo, int? idZona)
     {
         StringBuilder builder = new();
-        builder.AppendLine(" SELECT	R.Descripcion AS \"Premio\", P.Folio, P.CIF, P.Nombre, P.SegundoNombre, P.PrimerApellido, P.SegundoApellido, P.Telefono, P.Domicilio, P.Estado, P.Plaza, Z.Nombre as NameZona ");
+        builder.AppendLine(" SELECT	R.Descripcion AS \"Premio\", P.Folio, P.CIF, P.Nombre, P.SegundoNombre, P.PrimerApellido, P.SegundoApellido, P.Telefono, P.Domicilio, P.Estado, P.Sucursal, P.Plaza, Z.Nombre as NameZona ");
         builder.AppendLine($"FROM [Ganadores] AS G                                                                                 ");
         builder.AppendLine($"JOIN [{idSorteo}_Participantes] AS P ON P.IdParticipante = G.IdParticipante                           ");
         builder.AppendLine($"JOIN [{idSorteo}_Premios] AS R ON R.IdPremio = G.IdPremio                                             ");
@@ -225,19 +248,6 @@ public static class QuerysHelper
         builder.AppendLine($"DELETE FROM Ganadores");
         builder.Append($"    WHERE IdSorteo = {idSorteo}");
         return builder.ToString();
-    }
-
-    public static string UpdateRaffle(int idSorteo, string? nombreSorteo, string? routeImage, string? permiso)
-    {
-        var setters = new List<string>();
-        if (!string.IsNullOrEmpty(nombreSorteo)) setters.Add($"[Nombre] = '{nombreSorteo}' ");
-        if (!string.IsNullOrEmpty(permiso)) setters.Add($"[PermisoSegob] = '{permiso}' ");
-        if (!string.IsNullOrEmpty(routeImage)) setters.Add($"[RutaImagen] = '{routeImage}' ");
-        if (setters.Count == 0) throw new ArgumentException("No hay campos para actualizar");
-        string query = $@"UPDATE SorteosCPM
-                          SET {string.Join(",", setters)}
-                          WHERE IdSorteo = {idSorteo} ";
-        return query;
     }
 
     public static string GetRouteImage(int idSorteo)

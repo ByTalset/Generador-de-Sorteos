@@ -80,13 +80,14 @@ public class SqlParticipantRepository : SqlBaseRepository, IParticipantRepositor
         while (await reader.ReadAsync())
         {
             winner.IdParticipante = reader.GetInt32("IdParticipante");
+            winner.Folio = reader.GetInt64("Folio");
             winner.CIF = reader.GetString("CIF");
-            winner.Nombre = reader.GetString("Nombre");
-            winner.PrimerApellido = reader.GetString("PrimerApellido");
-            winner.Telefono = reader.GetString("Telefono");
-            winner.Domicilio = reader.GetString("Domicilio");
-            winner.Estado = reader.GetString("Estado");
-            winner.Plaza = reader.GetString("Plaza");
+            winner.Nombre = $"{reader.GetString("Nombre")} {reader.GetString("SegundoNombre")} {reader.GetString("PrimerApellido")}";
+            winner.Telefono = await reader.IsDBNullAsync("Telefono") ? string.Empty : reader.GetString("Telefono");
+            winner.Domicilio = await reader.IsDBNullAsync("Domicilio") ? string.Empty : reader.GetString("Domicilio");
+            winner.Estado = await reader.IsDBNullAsync("Estado") ? string.Empty : reader.GetString("Estado");
+            winner.Sucursal = await reader.IsDBNullAsync("Sucursal") ? string.Empty : reader.GetString("Sucursal");
+            winner.Plaza = await reader.IsDBNullAsync("Plaza") ? string.Empty : reader.GetString("Plaza");
         }
         return winner;
     }
@@ -108,15 +109,19 @@ public class SqlParticipantRepository : SqlBaseRepository, IParticipantRepositor
         {
             winner.Add(new Participants
             {
-                Premio = reader.GetString("Premio"),
+                Descripcion = reader.GetString("Premio"),
                 Folio = reader.GetInt64("Folio"),
                 CIF = reader.GetString("CIF"),
-                Nombre = $"{reader.GetString("Nombre")} {reader.GetString("SegundoNombre")} {reader.GetString("PrimerApellido")} {reader.GetString("SegundoApellido")}",
-                Telefono = reader.GetString("Telefono"),
-                Domicilio = reader.GetString("Domicilio"),
-                Estado = reader.GetString("Estado"),
-                Plaza = reader.GetString("Plaza"),
-                NameZona = reader.GetString("NameZona")
+                Nombre = reader.GetString("Nombre"),
+                SegundoNombre = reader.GetString("SegundoNombre"),
+                PrimerApellido = reader.GetString("PrimerApellido"),
+                SegundoApellido = reader.GetString("SegundoApellido"),
+                Telefono = await reader.IsDBNullAsync("Telefono") ? string.Empty : reader.GetString("Telefono"),
+                Domicilio = await reader.IsDBNullAsync("Domicilio") ? string.Empty : reader.GetString("Domicilio"),
+                Estado = await reader.IsDBNullAsync("Estado") ? string.Empty : reader.GetString("Estado"),
+                Sucursal = await reader.IsDBNullAsync("Sucursal") ? string.Empty : reader.GetString("Sucursal"),
+                Plaza = await reader.IsDBNullAsync("Plaza") ? string.Empty : reader.GetString("Plaza"),
+                Zona = reader.GetString("NameZona")
             });
         }
         return winner;

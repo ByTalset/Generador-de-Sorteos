@@ -23,7 +23,7 @@ public class DbServices
         try
         {
             var raffles = await _unitOfWork.RaffleRepository.GetAllAsync();
-            _logger.LogInformation("It is obtained {Raffles} from the response.", raffles);
+            _logger.LogInformation("It is obtained {@Raffles} from the response.", raffles);
             return Result<List<Raffle>>.Success(raffles);
         }
         catch (Exception ex)
@@ -63,7 +63,7 @@ public class DbServices
             await _unitOfWork.AwardsRepository.InsertAwardsAsync(premios, zonasId, nombreTablaPremios);
             await _unitOfWork.RaffleRepository.UpdateRaffleAsync(idSorteo, nombreTablaZonas);
             await _unitOfWork.CommitAsync();
-            _logger.LogInformation("It is obtained {NombreTablaZonas}\n{NombreTablaPremios}\n And the following prizes and zones are inserted {ZonasId}.", nombreTablaZonas, nombreTablaPremios, zonasId);
+            _logger.LogInformation("It is obtained {NombreTablaZonas}\n{NombreTablaPremios}\n And the following prizes and zones are inserted {@ZonasId}.", nombreTablaZonas, nombreTablaPremios, zonasId);
             return Result<bool>.Success(true);
         }
         catch (Exception ex)
@@ -80,13 +80,29 @@ public class DbServices
         try
         {
             var awards = await _unitOfWork.RaffleRepository.GetAreasAndAwardsAsync(idSorteo);
-            _logger.LogInformation("It is obtained {Awards} from the response.", awards);
+            _logger.LogInformation("It is obtained {@Awards} from the response.", awards);
             return Result<Awards>.Success(awards);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
             return Result<Awards>.Failure(ex.Message);
+        }
+    }
+
+    public async Task<Result<List<Awards>>> AwardsAllAync(int idSorteo)
+    {
+        await _unitOfWork.StartConnectionAsync();
+        try
+        {
+            var awards = await _unitOfWork.RaffleRepository.GetAwardsAllAsync(idSorteo);
+            _logger.LogInformation("It is obtained {@Awards} from the response.", awards);
+            return Result<List<Awards>>.Success(awards);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
+            return Result<List<Awards>>.Failure(ex.Message);
         }
     }
 
@@ -101,7 +117,7 @@ public class DbServices
             int folio = idsZona[randomIndex];
             Console.WriteLine($"Folio: {folio}\nIdZona: {idZona}");
             var participant = await _unitOfWork.ParticipantRepository.GetParticipantsWithoutWinningAsync(idSorteo, idZona, folio);
-            _logger.LogInformation("It is obtained {Participant} from the response.", participant);
+            _logger.LogInformation("It is obtained {@Participant} from the response.", participant);
             return Result<Participants>.Success(participant!);
         }
         catch (Exception ex)
@@ -135,12 +151,11 @@ public class DbServices
         try
         {
             var winners = await _unitOfWork.ParticipantRepository.GetWinnersAsync(idSorteo, idZona);
-            _logger.LogInformation("It is obtained {Winners} from the response.", winners);
+            _logger.LogInformation("It is obtained {@Winners} from the response.", winners);
             return Result<List<Participants>>.Success(winners);
         }
         catch (Exception ex)
         {
-            await _unitOfWork.RollbackAsync();
             _logger.LogError(ex, UNEXPECTED_ERROR_MESSAGE, ex.Message);
             return Result<List<Participants>>.Failure(ex.Message);
         }
@@ -152,7 +167,7 @@ public class DbServices
         try
         {
             var zonas = await _unitOfWork.RaffleRepository.GetAreasAllAsync(idSorteo);
-            _logger.LogInformation("It is obtained {Zonas} from the response.", zonas);
+            _logger.LogInformation("It is obtained {@Zonas} from the response.", zonas);
             return Result<List<Zona>>.Success(zonas);
         }
         catch (Exception ex)
@@ -238,7 +253,7 @@ public class DbServices
         try
         {
             var process = await _unitOfWork.ParticipantRepository.GetProcessAsync(idSorteo, processId);
-            _logger.LogInformation("It is obtained {Process} from the response.", process);
+            _logger.LogInformation("It is obtained {@Process} from the response.", process);
             return Result<LoadFile>.Success(process);
         }
         catch (Exception ex)

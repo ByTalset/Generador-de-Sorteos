@@ -10,6 +10,7 @@ public interface IRaffleRepository
     Task UpdateRaffleAsync(int idSorteo, string nombreTabla);
     Task<bool> UpdateRaffleAsync(int idSorteo, string? nombreSorteo, string? permiso, string? routeImage);
     Task<Awards> GetAreasAndAwardsAsync(int idSorteo);
+    Task<List<Awards>> GetAwardsAllAsync(int idSorteo);
     Task<List<Zona>> GetAreasAllAsync(int idSorteo);
     Task<bool> DeleteRaffleAsync(int idSorteo);
     Task<bool> ResetRaffleAsync(int idSorteo);

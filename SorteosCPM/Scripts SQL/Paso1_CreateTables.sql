@@ -13,7 +13,7 @@ CREATE TABLE Ganadores(
 	CIF NVARCHAR(MAX),
 	IdZona INT,
 	IdPremio INT,
-	IdSorteo INT FOREIGN KEY REFERENCES [SorteosCPM] (IdSorteo)
+	IdSorteo INT 
 );
 GO
 

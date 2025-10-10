@@ -1,6 +1,6 @@
 ﻿namespace DbServicesProvider.Dto;
 
-public class Participants
+public class Participants : Awards
 {
     public int IdParticipante { get; set; }
     public long Folio { get; set; }
@@ -12,7 +12,6 @@ public class Participants
     public string Telefono { get; set; } = string.Empty;
     public string Domicilio { get; set; } = string.Empty;
     public string Estado { get; set; } = string.Empty;
+    public string Sucursal { get; set; } = string.Empty;
     public string Plaza { get; set; } = string.Empty;
-    public string NameZona { get; set; } = string.Empty;
-    public string Premio { get; set; } = string.Empty;
 }

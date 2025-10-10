@@ -63,7 +63,7 @@ public class SqlRaffleRepository : SqlBaseRepository, IRaffleRepository
         int rowAffected = await command.ExecuteNonQueryAsync();
         return rowAffected > 0;
     }
-    
+
     public async Task<Awards> GetAreasAndAwardsAsync(int idSorteo)
     {
         Awards premios = new();
@@ -79,6 +79,29 @@ public class SqlRaffleRepository : SqlBaseRepository, IRaffleRepository
             premios.Zona = reader.GetString(2);
             premios.IdPremio = reader.GetInt32(3);
             premios.Descripcion = reader.GetString(4);
+        }
+
+        return premios;
+    }
+
+    public async Task<List<Awards>> GetAwardsAllAsync(int idSorteo)
+    {
+        List<Awards> premios = new();
+        string nombreTablaZonas = $"{idSorteo}_Zonas";
+        string nombreTablaPremios = $"{idSorteo}_Premios";
+        string query = QuerysHelper.GetAwards(nombreTablaPremios, nombreTablaZonas);
+        using SqlCommand command = new(query, _readConnection);
+        using SqlDataReader reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            var premio = new Awards()
+            {
+                IdPremio = reader.GetInt32(0),
+                Descripcion = reader.GetString(1),
+                Cantidad = reader.GetInt32(2),
+                Zona = reader.GetString(3),
+            };
+            premios.Add(premio);
         }
 
         return premios;

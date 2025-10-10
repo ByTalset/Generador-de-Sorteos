@@ -73,6 +73,9 @@ public class RafflesManagement
             if (participants.Value.IdParticipante > 0)
             {
                 var insertSuccess = await _dbServices.WinnerAsync(participants.Value.IdParticipante, participants.Value.CIF, cacheValue.Value.IdZona, cacheValue.Value.IdPremio, idSorteo);
+                participants.Value.Zona = cacheValue.Value.Zona;
+                participants.Value.Descripcion = cacheValue.Value.Descripcion;
+                participants.Value.NumPremio = cacheValue.Value.NumPremio;
                 if (!insertSuccess.IsSuccess)
                     return Result<Participants>.Failure(insertSuccess.Error);
             }
@@ -97,7 +100,15 @@ public class RafflesManagement
         var zonas = await _dbServices.GetAreasAsync(idSorteo);
         if (!zonas.IsSuccess)
             return Result<List<Zona>>.Failure(zonas.Error);
-        return Result<List<Zona>>.Success(zonas.Value);
+        return Result<List<Zona>>.Success(zonas.Value.OrderBy(z => z.IdZona).ToList());
+    }
+
+    public async Task<Result<List<Awards>>> PrintListAwardsAllAsync(int idSorteo)
+    {
+        var zonas = await _dbServices.AwardsAllAync(idSorteo);
+        if (!zonas.IsSuccess)
+            return Result<List<Awards>>.Failure(zonas.Error);
+        return Result<List<Awards>>.Success(zonas.Value);
     }
 
     public async Task<Result<bool>> RaffleSettingAsync(int idSorteo, int options)

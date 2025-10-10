@@ -138,14 +138,15 @@ app.MapGet("/Execute/{IdSorteo}", async (int idSorteo, [FromServices] RafflesMan
     if (results.Value is null)
         return Results.Accepted(null, "No hay mas premios que sortear.");
     return Results.Ok(new
-        {
-            results.Value.CIF,
-            Nombre = $"{results.Value.Nombre}{results.Value.SegundoNombre}{results.Value.PrimerApellido}",
-            results.Value.Telefono,
-            results.Value.Domicilio,
-            results.Value.Estado,
-            results.Value.Plaza
-        });
+    {
+        results.Value.CIF,
+        results.Value.Folio,
+        results.Value.Nombre,
+        results.Value.Plaza,
+        results.Value.Zona,
+        results.Value.Descripcion,
+        results.Value.NumPremio
+    });
 })
 .WithName("ExecuteRaffleAsync")
 .DisableAntiforgery()
@@ -170,6 +171,17 @@ app.MapGet("/ListAreas/{IdSorteo}", async (int idSorteo, [FromServices] RafflesM
     return Results.Ok(results.Value);
 })
 .WithName("PrintAreasAsync")
+.DisableAntiforgery()
+.WithOpenApi();
+
+app.MapGet("/ListAwards/{IdSorteo}", async (int idSorteo, [FromServices] RafflesManagement rafflesManagement) =>
+{
+    var results = await rafflesManagement.PrintListAwardsAllAsync(idSorteo);
+    if (!results.IsSuccess)
+        return Results.BadRequest(results.Error);
+    return Results.Ok(results.Value);
+})
+.WithName("PrintAwardsAsync")
 .DisableAntiforgery()
 .WithOpenApi();
 
