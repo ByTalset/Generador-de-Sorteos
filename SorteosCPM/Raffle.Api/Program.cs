@@ -49,6 +49,7 @@ builder.Services.AddTransient<RafflesManagement>();
 string[] origins = builder.Configuration.GetValue<string[]>("Origins") ?? Array.Empty<string>();
 string secretKey = builder.Configuration.GetValue<string>("Jwt:Key") ?? throw new ArgumentException("Key not found in configuration (appsettings.json)");
 byte[] key = System.Text.Encoding.UTF8.GetBytes(secretKey);
+Dictionary<string, string> roles = builder.Configuration.GetSection("Roles").Get<Dictionary<string, string>>() ?? new();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -68,8 +69,8 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin", "TI", "Sistemas")); // Acepta varios roles
-    options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
+    options.AddPolicy("AdminPolicy", policy => policy.RequireRole(roles["Administrador"], roles["Administrador TI"])); // Acepta varios roles
+    options.AddPolicy("UserPolicy", policy => policy.RequireRole(roles["Ejecutor"]));
 });
 
 builder.Services.AddCors(policys =>
@@ -127,6 +128,7 @@ app.MapGet("/GetAaward/{IdSorteo}", async (int idSorteo, [FromServices] RafflesM
     });
 })
 .WithName("GetAsync")
+.RequireAuthorization("AdminPolicy", "UserPolicy")
 .DisableAntiforgery()
 .WithOpenApi();
 
@@ -149,6 +151,7 @@ app.MapGet("/Execute/{IdSorteo}", async (int idSorteo, [FromServices] RafflesMan
     });
 })
 .WithName("ExecuteRaffleAsync")
+.RequireAuthorization("AdminPolicy", "UserPolicy")
 .DisableAntiforgery()
 .WithOpenApi();
 
@@ -160,6 +163,7 @@ app.MapGet("/ListWinner/{IdSorteo}", async (int idSorteo, int? idZona, [FromServ
     return Results.Ok(results.Value);
 })
 .WithName("PrintWinnersAsync")
+.RequireAuthorization("AdminPolicy", "UserPolicy")
 .DisableAntiforgery()
 .WithOpenApi();
 
@@ -171,6 +175,7 @@ app.MapGet("/ListAreas/{IdSorteo}", async (int idSorteo, [FromServices] RafflesM
     return Results.Ok(results.Value);
 })
 .WithName("PrintAreasAsync")
+.RequireAuthorization("AdminPolicy", "UserPolicy")
 .DisableAntiforgery()
 .WithOpenApi();
 
@@ -182,6 +187,7 @@ app.MapGet("/ListAwards/{IdSorteo}", async (int idSorteo, [FromServices] Raffles
     return Results.Ok(results.Value);
 })
 .WithName("PrintAwardsAsync")
+.RequireAuthorization("AdminPolicy", "UserPolicy")
 .DisableAntiforgery()
 .WithOpenApi();
 

@@ -19,7 +19,7 @@ public class ADAuthorizationService : IAuthorization
         _roles = configuration.GetSection("Roles").Get<List<string>>() ?? new List<string>();
     }
     // Implementation of authorization service would go here 
-    public Result<string> GetRole(string username)
+    public Result<string> GetRole(string username, string password = "")
     {
         if (_domain.IsNullOrEmpty()) return Result<string>.Failure("AD:Domain is not configured in appsettings.json");
         using PrincipalContext context = new PrincipalContext(ContextType.Domain, _domain);

@@ -2,5 +2,5 @@
 
 public interface IAuthorization
 {
-    Result<string> GetRole(string username);
+    Result<string> GetRole(string username, string password = "");
 }

@@ -22,7 +22,7 @@ public class LoginManagement
         if (!authenticated.IsSuccess) return Result<string>.Failure(authenticated.Error);
         if (authenticated.Value)
         {
-            Result<string> authorizate = _authorizationService.GetRole(username);
+            Result<string> authorizate = _authorizationService.GetRole(username, password); //Cambiar a GetRole con password
             if (!authorizate.IsSuccess) return Result<string>.Failure(authorizate.Error);
             if (authorizate.Value != "NoRole")
                 return _jwtAuthentication.GenerateJwt(username, authorizate.Value);
