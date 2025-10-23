@@ -26,7 +26,30 @@ public class SoapAuthorizationService : IAuthorization
         _roles = configuration.GetSection("Roles").Get<List<string>>() ?? new List<string>();
     }
 
-    public  Result<string> GetRole(string username, string password = "")
+    public Result<string> GetRole(string username, string password = "")
+        {
+            try
+            {
+                AuthenticationService.AutenticacionClient client = new AuthenticationService.AutenticacionClient();
+
+                var objAuth = Task.Run(async () => await client.ValidarUsuarioDirectorioActivoContraseniaAsync(username, _idAplicacion, _idSubAplicacion, password)).GetAwaiter().GetResult();
+
+                if (objAuth.Encontrado)
+                {
+                    string idPerfil = Convert.ToString(objAuth.IdPerfil);
+                    string idRole = _roles.FirstOrDefault(r => r == idPerfil, "NoRole");
+                    _logger.LogInformation("The following role {Role} is obtained.", idRole);
+                    return Result<string>.Success(idRole);
+                }
+                return Result<string>.Success("NoRole");
+            }
+            catch(Exception ex)
+            {
+                return Result<string>.Failure(ex.Message); 
+            }
+        }
+
+    private Result<string> GetRoles(string username, string password = "")
     {
         try
         {

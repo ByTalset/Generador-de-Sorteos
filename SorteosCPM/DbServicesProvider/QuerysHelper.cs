@@ -162,20 +162,20 @@ public static class QuerysHelper
     {
         StringBuilder builder = new();
         builder.AppendLine(" SELECT IdParticipante                                     ");
-        builder.AppendLine($"FROM [{nombreTablaParticipantes}]                         ");
-        builder.Append($"    WHERE idZona = {idZona}                                   ");
+        builder.AppendLine($"FROM [{nombreTablaParticipantes}] AS P                    ");
+        builder.AppendLine($"AND idZona = {idZona}                                     ");
+        builder.AppendLine(" AND NOT EXISTS (SELECT *                                  ");
+        builder.AppendLine("                 FROM Ganadores AS G                       ");
+        builder.Append("                     WHERE G.CIF = P.CIF)                      ");
         return builder.ToString();
     }
     public static string GetPartcipants(string nombreTablaParticipantes, int idZona, int folio)
     {
         StringBuilder builder = new();
         builder.AppendLine(" SELECT *                                                  ");
-        builder.AppendLine($"FROM [{nombreTablaParticipantes}] AS P                    ");
+        builder.AppendLine($"FROM [{nombreTablaParticipantes}]                         ");
         builder.AppendLine($"WHERE IdParticipante = {folio}                            ");
-        builder.AppendLine($"AND idZona = {idZona}                                     ");
-        builder.AppendLine("AND NOT EXISTS (SELECT *                                   ");
-        builder.AppendLine("                FROM Ganadores AS G                        ");
-        builder.Append("                    WHERE G.CIF = P.CIF)                       ");
+        builder.Append($"    AND idZona = {idZona}                                     ");
         return builder.ToString();
     }
     public static string InsertWinner(int IdParticipante, string cif, int idZona, int idPremio, int idSorteo)

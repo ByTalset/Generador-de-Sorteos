@@ -8,6 +8,7 @@ CREATE TYPE dbo.ParticipantesTipo AS TABLE(
 	Telefono NVARCHAR(20),
 	Domicilio NVARCHAR(100),
 	Estado NVARCHAR(50),
+	Sucursal NVARCHAR(50),
 	Plaza NVARCHAR(50),
 	IdZona INT
 );

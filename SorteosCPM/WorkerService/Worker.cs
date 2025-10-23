@@ -1,4 +1,5 @@
 using System.Data;
+using System.Text;
 using ConnectionManager;
 using DbServicesProvider.Dto;
 using DbServicesProvider.Interfaces;
@@ -43,7 +44,7 @@ public class Worker : BackgroundService
             if (!zonasResult.IsSuccess)
                 throw new ArgumentException(zonasResult.Error);
 
-            using var reader = new StreamReader(load.Path);
+            using var reader = new StreamReader(load.Path, Encoding.GetEncoding(1252));
             string? headerLine = await reader.ReadLineAsync();
             if (headerLine == null)
                 throw new ArgumentException("The file is empty or has no headers.");
@@ -69,12 +70,12 @@ public class Worker : BackgroundService
         string? line = string.Empty;
         while ((line = reader.ReadLine()) != null)
         {
-            string[] parts = line.Split(delimiter, StringSplitOptions.RemoveEmptyEntries)
+            string[] parts = line.Split(delimiter, StringSplitOptions.TrimEntries)
                                 .Select(p => p.Trim())
                                 .ToArray();
-            if (parts.Length < 11 || parts.Length > 11) continue;
+            if (parts.Length < 12 || parts.Length > 12) continue;
             var record = new SqlDataRecord(metaDatas);
-            zonas.TryGetValue(parts[10], out int zonaId);
+            zonas.TryGetValue(parts[11], out int zonaId);
             record.SetInt64(0, long.Parse(parts[0]));
             record.SetString(1, parts[1]);
             record.SetString(2, parts[2]);
@@ -85,7 +86,8 @@ public class Worker : BackgroundService
             record.SetString(7, parts[7]);
             record.SetString(8, parts[8]);
             record.SetString(9, parts[9]);
-            record.SetInt32(10, zonaId);
+            record.SetString(10, parts[10]);
+            record.SetInt32(11, zonaId);
 
             yield return record;
         }
@@ -127,6 +129,7 @@ public class Worker : BackgroundService
             new SqlMetaData("Telefono", SqlDbType.NVarChar, 20),
             new SqlMetaData("Domicilio", SqlDbType.NVarChar, 100),
             new SqlMetaData("Estado", SqlDbType.NVarChar, 50),
+            new SqlMetaData("Sucursal", SqlDbType.NVarChar, 50),
             new SqlMetaData("Plaza", SqlDbType.NVarChar, 50),
             new SqlMetaData("IdZona", SqlDbType.Int)
         };

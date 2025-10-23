@@ -15,13 +15,13 @@ BEGIN
 		DECLARE @sql NVARCHAR(MAX);
 		DECLARE @rowCount INT;
 	
-		-- Construir la consulta dinámicamente.
-		-- Usar QUOTENAME para proteger el nombre de la tabla de inyección de SQL.
-		SET @sql = N'INSERT INTO ' + QUOTENAME(@nombreTabla) + '(Folio, CIF, Nombre, SegundoNombre, PrimerApellido, SegundoApellido, Telefono, Domicilio, Estado, Plaza, IdZona)
-						SELECT Folio, CIF, Nombre, SegundoNombre, PrimerApellido, SegundoApellido, Telefono, Domicilio, Estado, Plaza, IdZona
+		-- Construir la consulta dinï¿½micamente.
+		-- Usar QUOTENAME para proteger el nombre de la tabla de inyecciï¿½n de SQL.
+		SET @sql = N'INSERT INTO ' + QUOTENAME(@nombreTabla) + '(Folio, CIF, Nombre, SegundoNombre, PrimerApellido, SegundoApellido, Telefono, Domicilio, Estado, Sucursal, Plaza, IdZona)
+						SELECT Folio, CIF, Nombre, SegundoNombre, PrimerApellido, SegundoApellido, Telefono, Domicilio, Estado, Sucursal, Plaza, IdZona
 						FROM @Participantes;';
 
-		-- Ejecutar la consulta dinámica.
+		-- Ejecutar la consulta dinï¿½mica.
 		-- Se pasa el nombre del tipo de tabla y la variable de la tabla para que sp_executesql pueda leerla.
 		EXEC sp_executesql @sql, N'@Participantes dbo.ParticipantesTipo READONLY', @Participantes;
 
